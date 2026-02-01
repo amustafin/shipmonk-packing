@@ -15,5 +15,9 @@
         "psr-4": {
             "App\\": "src/"
         }
+    },
+    "scripts": {
+        "prepare-db": "bin/doctrine orm:schema-tool:create && bin/doctrine dbal:run-sql \"$(cat data/packaging-data.sql)\"",
+        "runSample": "php run.php \"$(cat sample.json)\""
     }
 }
