@@ -10,24 +10,14 @@ use App\Model\Order\OrderRepository;
 use App\Model\Box\Box;
 use App\Model\Box\BoxRepository;
 use App\Model\Product\Product;
-use Doctrine\ORM\EntityManager;
 
 final readonly class PackagingFacade
 {
-    private function __construct(
+    public function __construct(
         private BoxRepository $boxRepository,
         private OrderRepository $orderRepository,
         private PackagingAPI $api,
     ) {
-    }
-
-    public static function create(EntityManager $em): self
-    {
-        return new self(
-            new BoxRepository($em),
-            new OrderRepository($em),
-            PackagingAPI::create(),
-        );
     }
 
     /**

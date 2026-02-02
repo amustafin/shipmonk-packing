@@ -11,22 +11,12 @@ use SensitiveParameter;
 
 final readonly class PackagingApi
 {
-    private function __construct(
+    public function __construct(
         private string $userName,
         #[SensitiveParameter]
         private string $apiKey,
         private Client $client,
     ) {
-    }
-
-    public static function create(): self
-    {
-        $userName = 'lowefir406@azeriom.com';
-        $apiToken = 'beaccdb88b96ece1e135cb503a275bf4';
-        $baseUrl = "https://eu.api.3dbinpacking.com/packer/";
-
-        $client = new Client(['base_uri' => $baseUrl]);
-        return new self($userName, $apiToken, $client);
     }
 
     /**

@@ -15,14 +15,6 @@ final readonly class ProductFacade
     ) {
     }
 
-    public static function create(EntityManager $em): self
-    {
-        return new self(
-            new ProductAssembler(),
-            new ProductRepository($em),
-        );
-    }
-
     /**
      * @return array<Product>
      * @throws ORMException
