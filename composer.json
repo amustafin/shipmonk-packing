@@ -1,5 +1,5 @@
 {
-    "name": "shipmonk/packing",
+    "name": "amustafin/shipmonk-packing",
     "description": "Testing day application stub",
     "require": {
         "ext-pdo": "*",
@@ -19,6 +19,17 @@
     },
     "scripts": {
         "prepare-db": "bin/doctrine orm:schema-tool:create && bin/doctrine dbal:run-sql \"$(cat data/packaging-data.sql)\"",
-        "runSample": "php run.php \"$(cat sample.json)\""
+        "runSample": "php run.php \"$(cat sample.json)\"",
+        "cs": [
+            "@codestyle"
+        ],
+        "cs-fix": [
+            "@codestyle-fix"
+        ],
+        "codestyle": "vendor/bin/ecs check",
+        "codestyle-fix": "vendor/bin/ecs check --fix"
+    },
+    "require-dev": {
+        "symplify/easy-coding-standard": "*"
     }
 }

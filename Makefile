@@ -9,3 +9,9 @@ bash:
 	docker-compose exec shipmonk-packing-app bash
 runSample:
 	docker-compose exec shipmonk-packing-app composer runSample
+codestyle:
+	docker-compose exec shipmonk-packing-app composer codestyle
+codestyle-fix:
+	docker-compose exec shipmonk-packing-app composer codestyle-fix
+cs: codestyle
+cs-fix: codestyle-fix
