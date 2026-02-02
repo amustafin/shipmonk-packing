@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Model\Product;
 
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Exception\ORMException;
 
 final readonly class ProductFacade

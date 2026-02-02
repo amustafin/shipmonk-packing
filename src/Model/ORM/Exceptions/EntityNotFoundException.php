@@ -8,5 +8,4 @@ use Exception;
 
 final class EntityNotFoundException extends Exception
 {
-
 }

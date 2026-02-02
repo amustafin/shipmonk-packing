@@ -30,6 +30,6 @@
         "codestyle-fix": "vendor/bin/ecs check --fix"
     },
     "require-dev": {
-        "symplify/easy-coding-standard": "*"
+        "symplify/easy-coding-standard": "^13.0"
     }
 }

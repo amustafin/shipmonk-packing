@@ -16,7 +16,7 @@ final readonly class ProductAssembler
     public function createProductDtoList(array $data): array
     {
         $rowProducts = $data['products'] ?? [];
-        if (!is_array($rowProducts)) {
+        if (! is_array($rowProducts)) {
             throw new InvalidArgumentException('Products data must be an array.');
         }
 

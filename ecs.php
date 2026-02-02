@@ -51,4 +51,3 @@ return ECSConfig::configure()
             ],
         ],
     );
-

@@ -53,7 +53,12 @@ final readonly class PackagingApi
     {
         $decoded = json_decode($data, true);
 
-        $dummyResult = ['id' => -1, 'w' => 0, 'h' => 0, 'd' => 0];
+        $dummyResult = [
+            'id' => -1,
+            'w' => 0,
+            'h' => 0,
+            'd' => 0,
+        ];
         $response = $decoded['response']
             ?? throw new Exception($response['error'] ?? 'Unknown error from API.');
         $binsPacked = $response['bins_packed']

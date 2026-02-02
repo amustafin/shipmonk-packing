@@ -26,7 +26,9 @@ $container = new DI\Container([
 
     // API dependencies
     Client::class => function () {
-        return new Client(['base_uri' => 'https://eu.api.3dbinpacking.com/packer/']);
+        return new Client([
+            'base_uri' => 'https://eu.api.3dbinpacking.com/packer/',
+        ]);
     },
     PackagingApi::class => function (Client $client) {
         return new PackagingApi(

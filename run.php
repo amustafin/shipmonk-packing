@@ -11,7 +11,9 @@ $container = require __DIR__ . '/src/bootstrap.php';
 $request = new Request(
     'POST',
     new Uri('http://localhost/pack'),
-    ['Content-Type' => 'application/json'],
+    [
+        'Content-Type' => 'application/json',
+    ],
     $argv[1]
 );
 

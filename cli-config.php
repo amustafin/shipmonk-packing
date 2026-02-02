@@ -9,4 +9,3 @@ $entityManager = $container->get(EntityManager::class);
 
 // Return EntityManagerProvider for Doctrine CLI tools
 return new SingleManagerProvider($entityManager);
-
