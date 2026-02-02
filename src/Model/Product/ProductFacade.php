@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Model\Product;
 
+use App\Helpers\JsonHelper;
 use Doctrine\ORM\Exception\ORMException;
 
 final readonly class ProductFacade
@@ -20,7 +21,7 @@ final readonly class ProductFacade
      */
     public function getOrCreateProductsFromRequest(string $data): array
     {
-        $productDtoList = $this->assembler->createProductDtoList(json_decode($data, true));
+        $productDtoList = $this->assembler->createProductDtoList(JsonHelper::decode($data));
 
         $productList = [];
         foreach ($productDtoList as $productDto) {

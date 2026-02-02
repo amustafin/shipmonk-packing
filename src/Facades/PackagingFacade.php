@@ -26,11 +26,11 @@ final readonly class PackagingFacade
     public function findBoxForProducts(array $products): ?Box
     {
         $productIds = array_map(fn (Product $product) => $product->getId(), $products);
-        $totalWeight = array_reduce($products, fn (int $carry, Product $product) => $carry + $product->weight, 0);
+        $totalWeight = array_reduce($products, fn (float $carry, Product $product) => $carry + $product->weight, 0);
         $box = $this->orderRepository->findByProducts(implode(',', $productIds))->box
             ?? $this->findBoxFromApi($products);
 
-        return $box?->maxWeight ?? 0 >= $totalWeight ? $box : null;
+        return $box->maxWeight ?? 0 >= $totalWeight ? $box : null;
     }
 
     /**

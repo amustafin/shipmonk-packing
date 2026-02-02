@@ -17,7 +17,10 @@ $request = new Request(
     $argv[1]
 );
 
-$response = $container->get(Application::class)->run($request);
+/** @var Application $app */
+$app = $container->get(Application::class);
+
+$response = $app->run($request);
 
 echo "<<< In:\n" . Message::toString($request) . "\n\n";
 echo ">>> Out:\n" . Message::toString($response) . "\n\n";

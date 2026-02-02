@@ -22,13 +22,16 @@ final readonly class ProductAssembler
 
         $productDTOs = [];
         foreach ($rowProducts as $data) {
+            if (! is_array($data)) {
+                throw new InvalidArgumentException('Single Product data must be an array.');
+            }
             $productDTOs[] = $this->createProductDTO($data);
         }
         return $productDTOs;
     }
 
     /**
-     * @array<int|string, mixed> $data
+     * @param array<int|string, mixed> $data
      */
     private function createProductDTO(array $data): ProductDTO
     {

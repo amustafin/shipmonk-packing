@@ -36,7 +36,7 @@ class Product
             ?? throw new \Exception('Entity not persisted yet, ID is null.');
     }
 
-    public static function fromDTO(ProductDto $dto): self
+    public static function fromDTO(ProductDTO $dto): self
     {
         return new self(
             width: $dto->width,

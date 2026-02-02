@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\API;
 
+use App\Helpers\JsonHelper;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Uri;
@@ -20,6 +21,22 @@ final readonly class PackagingApi
     }
 
     /**
+     * @param array<array{
+     *     id: int,
+     *     w: float,
+     *     h: float,
+     *     d: float,
+     *     wg: float,
+     *     q: int,
+     *     vr: int,
+     * }> $items
+     * @param array<array{
+     *     id: int,
+     *     w: float,
+     *     h: float,
+     *     d: float,
+     * }> $bins
+     *
      * @return array{
      *     id: int,
      *     w: float,
@@ -51,7 +68,7 @@ final readonly class PackagingApi
      */
     private function validatePackIntoManyResponse(string $data): array
     {
-        $decoded = json_decode($data, true);
+        $decoded = JsonHelper::decode($data);
 
         $dummyResult = [
             'id' => -1,
@@ -60,9 +77,13 @@ final readonly class PackagingApi
             'd' => 0,
         ];
         $response = $decoded['response']
-            ?? throw new Exception($response['error'] ?? 'Unknown error from API.');
-        $binsPacked = $response['bins_packed']
-            ?? throw new Exception('No binsPacked in API response.');
+            ?? throw new Exception(is_string($decoded['error']) ? $decoded['error'] : 'Unknown error from API.');
+        if (! is_array($response)) {
+            throw new Exception('Unexpected API response format.');
+        }
+        $binsPacked = is_array($response['bins_packed'])
+            ? $response['bins_packed']
+            : throw new Exception('No binsPacked in API response.');
         if (
             count($binsPacked) === 0
             || count($binsPacked) > 1
@@ -70,8 +91,10 @@ final readonly class PackagingApi
             return $dummyResult;
         }
 
-        $binData = $binsPacked[0]['bin_data']
-            ?? throw new Exception('No bin_data in API response.');
+        $singlePackedBin = is_array($binsPacked[0]) ? $binsPacked[0] : throw new Exception('No packed bin in API response.');
+        $binData = is_array($singlePackedBin['bin_data'])
+            ? $singlePackedBin['bin_data']
+            : throw new Exception('No bin_data in API response.');
 
         return [
             'id' => (is_numeric($binData['id']))
@@ -94,9 +117,12 @@ final readonly class PackagingApi
         return $this->client;
     }
 
+    /**
+     * @param array<string, mixed> $params
+     */
     private function prepareQueryParams(array $params): string
     {
-        return json_encode(array_merge(
+        return JsonHelper::encode(array_merge(
             [
                 'username' => $this->userName,
                 'api_key' => $this->apiKey,

@@ -10,7 +10,7 @@ final readonly class Validator
 {
     public static function validateFloat(string $name, mixed $value): float
     {
-        if (is_numeric($value) || is_int($value) || is_float($value)) {
+        if (is_numeric($value)) {
             return floatval($value);
         }
 

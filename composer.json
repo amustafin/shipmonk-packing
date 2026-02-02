@@ -9,6 +9,7 @@
         "guzzlehttp/psr7": "2.*",
         "doctrine/orm": "3.*",
         "symfony/cache": "7.*",
+        "symfony/var-exporter": "^7.0",
         "guzzlehttp/guzzle": "^7.9",
         "php-di/php-di": "^7.1"
     },

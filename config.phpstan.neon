@@ -46,5 +46,9 @@ parameters:
                     - var_dump
                     - var_export
         non_ignorable: false
+
+    exceptions:
+        uncheckedExceptionClasses:
+            - App\Exceptions\JsonException
 includes:
     - vendor/ekino/phpstan-banned-code/extension.neon
