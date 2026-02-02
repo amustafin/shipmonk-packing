@@ -15,3 +15,8 @@ codestyle-fix:
 	docker-compose exec shipmonk-packing-app composer codestyle-fix
 cs: codestyle
 cs-fix: codestyle-fix
+phpstan:
+	docker-compose exec shipmonk-packing-app composer phpstan
+phpstan-update-baseline:
+	docker-compose exec shipmonk-packing-app composer phpstan-update-baseline
+verify: codestyle phpstan

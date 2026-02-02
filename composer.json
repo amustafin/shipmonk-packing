@@ -27,9 +27,21 @@
             "@codestyle-fix"
         ],
         "codestyle": "vendor/bin/ecs check",
-        "codestyle-fix": "vendor/bin/ecs check --fix"
+        "codestyle-fix": "vendor/bin/ecs check --fix",
+        "phpstan": [
+            "@phpstan-clear-cache",
+            "@phpstan-analyse"
+        ],
+        "phpstan-clear-cache": "vendor/bin/phpstan clear-result-cache",
+        "phpstan-analyse": "vendor/bin/phpstan analyse -c config.phpstan.neon --memory-limit=1G",
+        "phpstan-update-baseline": [
+            "@phpstan-clear-cache",
+            "vendor/bin/phpstan analyse -c config.phpstan.neon --memory-limit=1G --generate-baseline"
+        ]
     },
     "require-dev": {
-        "symplify/easy-coding-standard": "^13.0"
+        "symplify/easy-coding-standard": "^13.0",
+        "phpstan/phpstan": "^2.1",
+        "ekino/phpstan-banned-code": "^3.0"
     }
 }
