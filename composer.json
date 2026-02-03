@@ -19,9 +19,16 @@
             "App\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
     "scripts": {
         "prepare-db": "bin/doctrine orm:schema-tool:create && bin/doctrine dbal:run-sql \"$(cat data/packaging-data.sql)\"",
         "runSample": "php run.php \"$(cat sample.json)\"",
+        "test": "vendor/bin/phpunit tests/Tests",
+        "test-coverage": "vendor/bin/phpunit tests/ --coverage-html coverage",
         "cs": [
             "@codestyle"
         ],
@@ -44,6 +51,7 @@
     "require-dev": {
         "symplify/easy-coding-standard": "^13.0",
         "phpstan/phpstan": "^2.1",
-        "ekino/phpstan-banned-code": "^3.0"
+        "ekino/phpstan-banned-code": "^3.0",
+        "phpunit/phpunit": "^12.5"
     }
 }

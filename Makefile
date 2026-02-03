@@ -19,4 +19,8 @@ phpstan:
 	docker-compose exec shipmonk-packing-app composer phpstan
 phpstan-update-baseline:
 	docker-compose exec shipmonk-packing-app composer phpstan-update-baseline
-verify: codestyle phpstan
+test:
+	docker-compose exec shipmonk-packing-app composer test
+test-coverage:
+	docker-compose exec shipmonk-packing-app composer test-coverage
+verify: codestyle phpstan test

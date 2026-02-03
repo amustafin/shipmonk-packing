@@ -23,6 +23,7 @@ return ECSConfig::configure()
     )
     ->withPhpCsFixerSets(
         php84Migration: true,
+        phpunit84MigrationRisky: true,
     )
     ->withSpacing(
         indentation: Option::INDENTATION_SPACES,
