@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App;
 
-use App\Facades\PackagingFacade;
 use App\Model\Product\ProductFacade;
+use App\Modules\Packaging\PackagingFacade;
 use Doctrine\ORM\Exception\ORMException;
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\RequestInterface;
@@ -27,7 +27,7 @@ final readonly class Application
             );
             return new Response(
                 body: $this->packagingFacade->findBoxForProducts($productList)?->toJson()
-                ?? 'Requested products cannot be packed into any available single box.',
+                    ?? 'Requested products cannot be packed into any available single box.',
             );
         } catch (ORMException $e) {
             return new Response(status: 500, body: 'Internal Server Error: ' . $e->getMessage());

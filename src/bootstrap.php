@@ -1,7 +1,7 @@
 <?php
 
-use App\API\PackagingApi;
-use App\Helpers\Config;
+use App\Modules\Core\Config;
+use App\Modules\Packaging\RemotePackager\API\PackagingApi;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\UnderscoreNamingStrategy;

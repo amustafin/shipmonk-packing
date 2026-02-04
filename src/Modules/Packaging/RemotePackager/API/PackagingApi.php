@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\API;
+namespace App\Modules\Packaging\RemotePackager\API;
 
-use App\Helpers\JsonHelper;
+use App\Helpers\Json\Json;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Uri;
@@ -68,7 +68,7 @@ final readonly class PackagingApi
      */
     private function validatePackIntoManyResponse(string $data): array
     {
-        $decoded = JsonHelper::decode($data);
+        $decoded = Json::decode($data);
 
         $dummyResult = [
             'id' => -1,
@@ -122,7 +122,7 @@ final readonly class PackagingApi
      */
     private function prepareQueryParams(array $params): string
     {
-        return JsonHelper::encode(array_merge(
+        return Json::encode(array_merge(
             [
                 'username' => $this->userName,
                 'api_key' => $this->apiKey,

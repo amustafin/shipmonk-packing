@@ -2,13 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Helpers;
+namespace App\Helpers\Json;
 
-use App\Types\Json;
 use JsonException;
 use stdClass;
 
-final class JsonHelper
+final class Json
 {
     public const int ESCAPE_UNICODE = 1 << 19;
 
@@ -51,19 +50,16 @@ final class JsonHelper
     }
 
     /**
-     * @template T of string|Json
-     * @param T $json
      * @return array<int|string, mixed>
-     * @throws (T is string ? JsonException : never)
+     * @throws JsonException
      */
-    public static function decode(string|Json $json, int $flags = 0): array
+    public static function decode(string $json, int $flags = 0): array
     {
         if ($json === '') {
             throw new JsonException('Empty input');
         }
-        $data = $json instanceof Json ? $json->json : $json;
 
-        $value = json_decode($data, null, 512, $flags | JSON_OBJECT_AS_ARRAY | JSON_BIGINT_AS_STRING);
+        $value = json_decode($json, null, 512, $flags | JSON_OBJECT_AS_ARRAY | JSON_BIGINT_AS_STRING);
         if ($error = json_last_error()) {
             throw new JsonException(message: json_last_error_msg(), code: $error);
         }

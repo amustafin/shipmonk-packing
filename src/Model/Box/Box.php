@@ -2,7 +2,7 @@
 
 namespace App\Model\Box;
 
-use App\Helpers\JsonHelper;
+use App\Helpers\Json\Json;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -38,7 +38,7 @@ class Box
 
     public function toJson(): string
     {
-        return JsonHelper::encode([
+        return Json::encode([
             'name' => 'Box ' . $this->getId(),
             'width' => $this->width,
             'height' => $this->height,

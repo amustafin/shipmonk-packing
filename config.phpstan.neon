@@ -49,6 +49,6 @@ parameters:
 
     exceptions:
         uncheckedExceptionClasses:
-            - App\Exceptions\JsonException
+            - 'App\Helpers\Json\JsonException'
 includes:
     - vendor/ekino/phpstan-banned-code/extension.neon
