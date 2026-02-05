@@ -10,6 +10,7 @@ use Doctrine\ORM\Exception\ORMException;
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Throwable;
 
 final readonly class Application
 {
@@ -30,7 +31,11 @@ final readonly class Application
                     ?? 'Requested products cannot be packed into any available single box.',
             );
         } catch (ORMException $e) {
+            // Log error here to indicate database issues
             return new Response(status: 500, body: 'Internal Server Error: ' . $e->getMessage());
+        } catch (Throwable) {
+            // Log critical here to indicate unknown issues
+            return new Response(status: 500, body: 'Internal Server Error');
         }
     }
 }

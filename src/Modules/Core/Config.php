@@ -15,6 +15,9 @@ final readonly class Config
     ) {
     }
 
+    /**
+     * @throws RuntimeException
+     */
     public static function fromYaml(string $path): self
     {
         $data = Yaml::parseFile($path);

@@ -7,6 +7,7 @@ namespace App\Model\Order;
 use App\Model\Box\Box;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use InvalidArgumentException;
 
 /**
  * Represents order configuration with known required Box.
@@ -33,6 +34,6 @@ class Order
     public function getId(): int
     {
         return $this->id
-            ?? throw new \Exception('Entity not persisted yet, ID is null.');
+            ?? throw new InvalidArgumentException('Entity not persisted yet, ID is null.');
     }
 }

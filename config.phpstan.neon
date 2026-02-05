@@ -48,7 +48,12 @@ parameters:
         non_ignorable: false
 
     exceptions:
+        check:
+            missingCheckedExceptionInThrows: true
+            tooWideThrowType: true
         uncheckedExceptionClasses:
             - 'App\Helpers\Json\JsonException'
+            - 'App\Modules\Core\Exceptions\ShouldNotHappenException'
+            - 'InvalidArgumentException'
 includes:
     - vendor/ekino/phpstan-banned-code/extension.neon

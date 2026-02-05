@@ -5,6 +5,7 @@ namespace App\Model\Box;
 use App\Helpers\Json\Json;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use InvalidArgumentException;
 
 /**
  * Represents a box available in the warehouse.
@@ -33,7 +34,7 @@ class Box
     public function getId(): int
     {
         return $this->id
-            ?? throw new \Exception('Entity not persisted yet, ID is null.');
+            ?? throw new InvalidArgumentException('Entity not persisted yet, ID is null.');
     }
 
     public function toJson(): string

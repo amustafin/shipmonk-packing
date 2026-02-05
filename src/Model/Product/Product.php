@@ -6,6 +6,7 @@ namespace App\Model\Product;
 
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use InvalidArgumentException;
 
 /**
  * Represents a product box that needs to be packed.
@@ -33,7 +34,7 @@ class Product
     public function getId(): int
     {
         return $this->id
-            ?? throw new \Exception('Entity not persisted yet, ID is null.');
+            ?? throw new InvalidArgumentException('Entity not persisted yet, ID is null.');
     }
 
     public static function fromDTO(ProductDTO $dto): self

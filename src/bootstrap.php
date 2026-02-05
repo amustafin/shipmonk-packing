@@ -6,7 +6,6 @@ use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\UnderscoreNamingStrategy;
 use Doctrine\ORM\ORMSetup;
-use GuzzleHttp\Client;
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -18,7 +17,7 @@ $container = new DI\Container([
         $ormConfig->setNamingStrategy(new UnderscoreNamingStrategy());
 
         return new EntityManager(DriverManager::getConnection([
-            'driver' => $config->dbConfig->driver,
+            'driver' => $config->dbConfig->getDriver(),
             'host' => $config->dbConfig->host,
             'user' => $config->dbConfig->user,
             'password' => $config->dbConfig->password,
@@ -26,18 +25,8 @@ $container = new DI\Container([
         ]), $ormConfig);
     },
 
-    // API dependencies
-    Client::class => function () use ($config) {
-        return new Client([
-            'base_uri' => $config->binPackagingConfig->baseUrl,
-        ]);
-    },
-    PackagingApi::class => function (Client $client) use ($config) {
-        return new PackagingApi(
-            userName: $config->binPackagingConfig->user,
-            apiKey: $config->binPackagingConfig->apiKey,
-            client: $client
-        );
+    PackagingApi::class => function () use ($config) {
+        return new PackagingApi(config: $config->binPackagingConfig);
     },
 ]);
 

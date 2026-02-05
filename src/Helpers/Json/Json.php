@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Helpers\Json;
 
-use JsonException;
+use JsonException as RootJsonException;
 use stdClass;
 
 final class Json
@@ -38,7 +38,11 @@ final class Json
             | ($flags & ~self::ESCAPE_UNICODE)
             | (defined('JSON_PRESERVE_ZERO_FRACTION') ? JSON_PRESERVE_ZERO_FRACTION : 0); // since PHP 5.6.6 & PECL JSON-C 1.3.7
 
-        $json = json_encode($data, $flags);
+        try {
+            $json = json_encode($data, $flags);
+        } catch (RootJsonException $e) {
+            throw new JsonException(previous: $e);
+        }
         if ($error = json_last_error()) {
             throw new JsonException(json_last_error_msg(), $error);
         }

@@ -5,19 +5,23 @@ declare(strict_types=1);
 namespace App\Modules\Packaging\RemotePackager\API;
 
 use App\Helpers\Json\Json;
-use Exception;
+use App\Modules\Core\BinPackagingConfig;
+use App\Modules\Packaging\RemotePackager\Exceptions\ApiException;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Uri;
-use SensitiveParameter;
+use Throwable;
 
 final readonly class PackagingApi
 {
+    private Client $client;
+
     public function __construct(
-        private string $userName,
-        #[SensitiveParameter]
-        private string $apiKey,
-        private Client $client,
+        private BinPackagingConfig $config,
     ) {
+        $this->client = new Client([
+            'base_uri' => $config->baseUrl,
+        ]);
     }
 
     /**
@@ -43,6 +47,7 @@ final readonly class PackagingApi
      *     h: float,
      *     d: float,
      * }
+     * @throws ApiException
      */
     public function callPackIntoMany(array $items, array $bins): array
     {
@@ -52,8 +57,16 @@ final readonly class PackagingApi
         ]);
         $uri = (new Uri('packIntoMany?query=' . $query));
 
-        $response = $this->getClient()->get($uri);
-        return $this->validatePackIntoManyResponse($response->getBody()->getContents());
+        try {
+            $response = $this->getClient()->get($uri);
+            return $this->validatePackIntoManyResponse($response->getBody()->getContents());
+        } catch (GuzzleException $e) {
+            throw ApiException::unknown($e->getMessage());
+        } catch (Throwable $e) {
+            // Critical log should be here
+            // rethrowing as ApiException to avoid unexpected exceptions in PackagingService
+            throw ApiException::unknown(previous: $e);
+        }
     }
 
     /**
@@ -64,7 +77,7 @@ final readonly class PackagingApi
      *     d: float,
      * }
      *
-     * @throws Exception
+     * @throws ApiException
      */
     private function validatePackIntoManyResponse(string $data): array
     {
@@ -77,13 +90,13 @@ final readonly class PackagingApi
             'd' => 0,
         ];
         $response = $decoded['response']
-            ?? throw new Exception(is_string($decoded['error']) ? $decoded['error'] : 'Unknown error from API.');
+            ?? throw ApiException::unknown(is_string($decoded['error']) ? $decoded['error'] : null);
         if (! is_array($response)) {
-            throw new Exception('Unexpected API response format.');
+            throw ApiException::unexpectedFormat();
         }
         $binsPacked = is_array($response['bins_packed'])
             ? $response['bins_packed']
-            : throw new Exception('No binsPacked in API response.');
+            : throw ApiException::unexpectedFormat();
         if (
             count($binsPacked) === 0
             || count($binsPacked) > 1
@@ -91,24 +104,24 @@ final readonly class PackagingApi
             return $dummyResult;
         }
 
-        $singlePackedBin = is_array($binsPacked[0]) ? $binsPacked[0] : throw new Exception('No packed bin in API response.');
+        $singlePackedBin = is_array($binsPacked[0]) ? $binsPacked[0] : throw ApiException::missingField('packed bin');
         $binData = is_array($singlePackedBin['bin_data'])
             ? $singlePackedBin['bin_data']
-            : throw new Exception('No bin_data in API response.');
+            : throw ApiException::missingField('bin_data');
 
         return [
             'id' => (is_numeric($binData['id']))
                 ? intval($binData['id'])
-                : throw new Exception('No bin id in API response.'),
+                : throw ApiException::missingField('id'),
             'w' => (is_numeric($binData['w']))
                 ? floatval($binData['w'])
-                : throw new Exception('No bin width in API response.'),
+                : throw ApiException::missingField('width'),
             'h' => (is_numeric($binData['h']))
                 ? floatval($binData['h'])
-                : throw new Exception('No bin height in API response.'),
+                : throw ApiException::missingField('height'),
             'd' => (is_numeric($binData['d']))
                 ? floatval($binData['d'])
-                : throw new Exception('No bin depth(length) in API response.'),
+                : throw ApiException::missingField('depth(length)'),
         ];
     }
 
@@ -124,8 +137,8 @@ final readonly class PackagingApi
     {
         return Json::encode(array_merge(
             [
-                'username' => $this->userName,
-                'api_key' => $this->apiKey,
+                'username' => $this->config->user,
+                'api_key' => $this->config->apiKey,
             ],
             $params
         ));

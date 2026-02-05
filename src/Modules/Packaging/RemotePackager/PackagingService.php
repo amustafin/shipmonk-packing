@@ -8,6 +8,7 @@ use App\Model\Box\Box;
 use App\Model\Box\BoxRepository;
 use App\Model\Product\Product;
 use App\Modules\Packaging\RemotePackager\API\PackagingApi;
+use App\Modules\Packaging\RemotePackager\Exceptions\ApiException;
 
 final readonly class PackagingService
 {
@@ -48,8 +49,13 @@ final readonly class PackagingService
             $availableBoxes
         );
 
-        $boxData = $this->api->callPackIntoMany($items, $bins);
-
-        return $this->boxRepository->find($boxData['id']);
+        try {
+            $boxData = $this->api->callPackIntoMany($items, $bins);
+            return $this->boxRepository->find($boxData['id']);
+        } catch (ApiException) {
+            // log warning should be here. An increased number of those warnings indicates errors in API
+            // null return because there is a fallback solution to find box differently
+            return null;
+        }
     }
 }

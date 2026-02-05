@@ -10,6 +10,7 @@ use App\Model\Order\OrderRepository;
 use App\Model\Product\Product;
 use App\Modules\Packaging\InternalPackager\PackagingService as InternalPackagingService;
 use App\Modules\Packaging\RemotePackager\PackagingService as RemotePackagingService;
+use Doctrine\ORM\Exception\ORMException;
 
 final readonly class PackagingFacade
 {
@@ -46,7 +47,15 @@ final readonly class PackagingFacade
             productIdList: implode(',', $productIds),
             box: $box,
         );
-        $this->orderRepository->save($order);
+
+        try {
+            $this->orderRepository->save($order);
+        } catch (ORMException) {
+            // log error should be here.
+            // Do not rethrow, so a client receives a response,
+            // but the increased number of those errors should be investigated and fixed as soon as possible,
+            // because it might increase the number of API calls
+        }
 
         return $order->box;
     }
