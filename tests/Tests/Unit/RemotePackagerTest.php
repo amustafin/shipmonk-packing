@@ -7,6 +7,7 @@ namespace Tests\Tests\Unit;
 use App\Helpers\Json\Json;
 use App\Model\Box\Box;
 use App\Model\Box\BoxRepository;
+use App\Model\Product\Product;
 use App\Modules\Packaging\RemotePackager\API\PackagingApi;
 use App\Modules\Packaging\RemotePackager\PackagingService;
 use GuzzleHttp\Client;
@@ -18,6 +19,7 @@ use Tests\BaseTest;
 
 class RemotePackagerTest extends BaseTest
 {
+    private BoxRepository $boxRepository;
     private MockHandler $clientMockHandler;
 
     private PackagingService $packagingService;
@@ -32,14 +34,15 @@ class RemotePackagerTest extends BaseTest
             'handler' => $handlerStack,
         ]);
 
-        $api = Mockery::mock(PackagingApi::class);
+        $api = Mockery::mock(PackagingApi::class)->makePartial();
         $api->shouldAllowMockingProtectedMethods();
         $api->allows([
+            "prepareQueryParams" => '',
             "getClient" => $guzzleClient,
         ]);
-        $boxRepository = $this->getServiceByType(BoxRepository::class);
+        $this->boxRepository = $this->getServiceByType(BoxRepository::class);
 
-        $this->packagingService = new PackagingService($boxRepository, $api);
+        $this->packagingService = new PackagingService($this->boxRepository, $api);
     }
 
     protected function tearDown(): void
@@ -57,17 +60,30 @@ class RemotePackagerTest extends BaseTest
     public function testPackager(): void
     {
         $boxes = $this->prepareBoxes();
-        self::assertCount(5, $boxes);
+        foreach ($boxes as $box) {
+            $this->boxRepository->save($box);
+        }
+        $expectedSuitableBox = $boxes[random_int(1, count($boxes))];
+        $this->prepareApiResponseFromEntity($expectedSuitableBox);
+
+        /* Logic is not checked, just the response structure */
+        $products = [
+            new Product(width: 2.0, height: 2.0, length: 2.0, weight: 5.0, id: 1),
+            new Product(width: 1.0, height: 1.0, length: 1.0, weight: 5.0, id: 2),
+        ];
+        $foundBox = $this->packagingService->findBox($products);
+
+        self::assertSame($expectedSuitableBox, $foundBox);
     }
 
     private function prepareBoxes(): array
     {
         return [
-            new Box(width: 2.5, height: 3.0, length: 1.0, maxWeight: 20.0, id: 1),
-            new Box(width: 4.0, height: 4.0, length: 4.0, maxWeight: 20.0, id: 2),
-            new Box(width: 2.0, height: 2.0, length: 10.0, maxWeight: 20.0, id: 3),
-            new Box(width: 5.5, height: 6.0, length: 7.5, maxWeight: 30.0, id: 4),
-            new Box(width: 9.0, height: 9.0, length: 9.0, maxWeight: 30.0, id: 5)
+            1 => new Box(width: 2.5, height: 3.0, length: 1.0, maxWeight: 20.0, id: 1),
+            2 => new Box(width: 4.0, height: 4.0, length: 4.0, maxWeight: 20.0, id: 2),
+            3 => new Box(width: 2.0, height: 2.0, length: 10.0, maxWeight: 20.0, id: 3),
+            4 => new Box(width: 5.5, height: 6.0, length: 7.5, maxWeight: 30.0, id: 4),
+            5 => new Box(width: 9.0, height: 9.0, length: 9.0, maxWeight: 30.0, id: 5)
         ];
     }
 

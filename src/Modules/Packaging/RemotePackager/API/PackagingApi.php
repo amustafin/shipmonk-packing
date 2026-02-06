@@ -133,7 +133,7 @@ class PackagingApi
     /**
      * @param array<string, mixed> $params
      */
-    private function prepareQueryParams(array $params): string
+    protected function prepareQueryParams(array $params): string
     {
         return Json::encode(array_merge(
             [
