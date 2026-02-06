@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Core\Exceptions;
 
 use Exception;
+use Throwable;
 
 /**
  * This exception represents errors that never should happen in normal circumstances.
@@ -12,4 +13,8 @@ use Exception;
  */
 final class ShouldNotHappenException extends Exception
 {
+    public function __construct(?string $message = null, int $code = 0, ?Throwable $previous = null)
+    {
+        parent::__construct($message ?? $previous?->getMessage() ?? '', $previous?->getCode() ?? $code, $previous);
+    }
 }

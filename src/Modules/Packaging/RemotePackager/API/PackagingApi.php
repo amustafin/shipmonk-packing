@@ -12,12 +12,12 @@ use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Uri;
 use Throwable;
 
-final readonly class PackagingApi
+class PackagingApi
 {
     private Client $client;
 
     public function __construct(
-        private BinPackagingConfig $config,
+        private readonly BinPackagingConfig $config,
     ) {
         $this->client = new Client([
             'base_uri' => $config->baseUrl,
@@ -125,7 +125,7 @@ final readonly class PackagingApi
         ];
     }
 
-    private function getClient(): Client
+    protected function getClient(): Client
     {
         return $this->client;
     }

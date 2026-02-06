@@ -10,6 +10,7 @@ use Symfony\Component\Yaml\Yaml;
 final readonly class Config
 {
     private function __construct(
+        public string $rootDir,
         public DatabaseConfig $dbConfig,
         public BinPackagingConfig $binPackagingConfig,
     ) {
@@ -30,6 +31,11 @@ final readonly class Config
         }
 
         $parameters = $data['parameters'];
+
+        // Validate database config
+        if (! isset($parameters['rootDir']) || ! is_string($parameters['rootDir'])) {
+            throw new RuntimeException(sprintf('Missing or invalid "rootDir" configuration in config file: %s', $path));
+        }
 
         // Validate database config
         if (! isset($parameters['database']) || ! is_array($parameters['database'])) {
@@ -98,6 +104,7 @@ final readonly class Config
         }
 
         return new self(
+            rootDir: $parameters['rootDir'],
             dbConfig: new DatabaseConfig(
                 driver: $database['driver'],
                 host: $database['host'],

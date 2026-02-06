@@ -53,6 +53,7 @@
         "symplify/easy-coding-standard": "^13.0",
         "phpstan/phpstan": "^2.1",
         "ekino/phpstan-banned-code": "^3.0",
-        "phpunit/phpunit": "^12.5"
+        "phpunit/phpunit": "^12.5",
+        "mockery/mockery": "^1.6"
     }
 }
