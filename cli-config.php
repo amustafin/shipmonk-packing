@@ -1,8 +1,11 @@
 <?php
 
-use Doctrine\ORM\Tools\Console\ConsoleRunner;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Tools\Console\EntityManagerProvider\SingleManagerProvider;
 
-$entityManager = require_once __DIR__ . '/src/bootstrap.php';
+/** @var DI\Container $container */
+$container = require_once __DIR__ . '/src/bootstrap.php';
+$entityManager = $container->get(EntityManager::class);
 
-return ConsoleRunner::createHelperSet($entityManager); // needed by vendor/bin/doctrine
-
+// Return EntityManagerProvider for Doctrine CLI tools
+return new SingleManagerProvider($entityManager);

@@ -1,3 +1,5 @@
 /.env
 /.idea
+/config-local.yml
+/tests/config/config-local.yml
 /vendor

@@ -1,0 +1,59 @@
+parameters:
+    phpVersion: 80400
+    reportUnmatchedIgnoredErrors: true
+    reportWrongPhpDocTypeInVarTag: true
+
+    level: 10
+    paths:
+        - src
+        - run.php
+
+    # Exclude generated files
+    excludePaths:
+        - vendor
+    ignoreErrors:
+        -
+            message: '#Should not use node with type "Stmt_Echo", please change the code.#'
+            paths:
+                - %currentWorkingDirectory%/run.php
+    banned_code:
+        nodes:
+            # enable detection of echo
+            -
+                type: Stmt_Echo
+                functions: null
+
+            # enable detection of eval
+            -
+                type: Expr_Eval
+                functions: null
+
+            # enable detection of die/exit
+            -
+                type: Expr_Exit
+                functions: null
+
+            # enable detection of a set of functions
+            -
+                type: Expr_FuncCall
+                functions:
+                    - debug_backtrace
+                    - ini_set
+                    - passthru
+                    - phpinfo
+                    - print_r
+                    - shell_exec
+                    - var_dump
+                    - var_export
+        non_ignorable: false
+
+    exceptions:
+        check:
+            missingCheckedExceptionInThrows: true
+            tooWideThrowType: true
+        uncheckedExceptionClasses:
+            - 'App\Helpers\Json\JsonException'
+            - 'App\Modules\Core\Exceptions\ShouldNotHappenException'
+            - 'InvalidArgumentException'
+includes:
+    - vendor/ekino/phpstan-banned-code/extension.neon
